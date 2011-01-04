@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Red Hat Developer Network
+Bundle-SymbolicName: rhdn; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: rhdn.Activator
+Bundle-Vendor: Red Hat
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.junit4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            id="rhdn.contribution1">
+         <menu
+               label="Red Hat"
+               path="additions"
+               id="rhdn.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Attach to Support Case"
+               class="rhdn.popup.actions.FileSelectionAction"
+               menubarPath="rhdn.menu1/group1"
+               enablesFor="+"
+               id="rhdn.newAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
