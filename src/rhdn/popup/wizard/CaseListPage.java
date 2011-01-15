@@ -1,5 +1,6 @@
 package rhdn.popup.wizard;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -12,11 +13,16 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
+import rhdn.client.ServiceLocator;
+import rhdn.client.ServiceLocatorImpl;
 import rhdn.command.AttachToCaseCommand;
 
+import com.redhat.gss.strata.model.Case;
+import com.redhat.gss.strata.model.Cases;
+
 /**
- * A wizard page that presents a list of open support cases from which the user can select
- * a single one.
+ * A wizard page that presents a list of open support cases from which the user
+ * can select a single one.
  * 
  * @author Chris Bredesen
  */
@@ -37,7 +43,8 @@ class CaseListPage extends WizardPage {
 		composite.setLayout(new FillLayout());
 
 		// build the table
-		final Table caseTable = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		final Table caseTable = new Table(composite, SWT.BORDER | SWT.V_SCROLL
+				| SWT.H_SCROLL);
 		TableColumn caseCol = new TableColumn(caseTable, SWT.LEFT);
 		caseCol.setText("Case");
 		caseCol.setWidth(80);
@@ -53,13 +60,20 @@ class CaseListPage extends WizardPage {
 				command.setCaseNumber(caseNumber);
 			}
 		});
-		
-		for (int i = 0; i < 9; i++) {
+
+		List<Case> cases = getOpenCases();
+		for (Case c : cases) {
 			TableItem item = new TableItem(caseTable, SWT.NONE);
-			item.setText(new String[] {"0002189" + i, "JBoss fails to start on RHEL 5.4"});
+			item.setText(new String[] { c.getCaseNumber(), c.getSummary() });
 		}
 
 		setControl(composite);
+	}
+
+	private List<Case> getOpenCases() {
+		ServiceLocator locator = new ServiceLocatorImpl();
+		Cases cases = locator.getCasesResource().listCases(true, null, null, null);
+		return cases.getCase();
 	}
 
 }
