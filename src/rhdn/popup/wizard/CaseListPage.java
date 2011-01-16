@@ -12,9 +12,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.jboss.resteasy.client.ClientResponseFailure;
 
-import rhdn.client.ServiceLocator;
-import rhdn.client.ServiceLocatorImpl;
+import rhdn.client.ClientProxyPortalApiResourceLocator;
+import rhdn.client.PortalApiResourceLocator;
 import rhdn.command.AttachToCaseCommand;
 
 import com.redhat.gss.strata.model.Case;
@@ -39,6 +40,16 @@ class CaseListPage extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
+		
+		// try to list cases first; if there's an error we need to display it
+		List<Case> cases;
+		try {
+			cases = getOpenCases();
+		} catch (ClientResponseFailure e) {
+			setErrorMessage(e.getMessage());
+			return;
+		}
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new FillLayout());
 
@@ -61,7 +72,6 @@ class CaseListPage extends WizardPage {
 			}
 		});
 
-		List<Case> cases = getOpenCases();
 		for (Case c : cases) {
 			TableItem item = new TableItem(caseTable, SWT.NONE);
 			item.setText(new String[] { c.getCaseNumber(), c.getSummary() });
@@ -71,7 +81,7 @@ class CaseListPage extends WizardPage {
 	}
 
 	private List<Case> getOpenCases() {
-		ServiceLocator locator = new ServiceLocatorImpl();
+		PortalApiResourceLocator locator = new ClientProxyPortalApiResourceLocator();
 		Cases cases = locator.getCasesResource().listCases(true, null, null, null);
 		return cases.getCase();
 	}
